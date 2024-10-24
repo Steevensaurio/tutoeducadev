@@ -1,30 +1,10 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { ACCESS_TOKEN } from "../constants";
+import { useState } from "react";
 import libro from "../assets/libro3d.png";
+import perfil from "../assets/pinia.svg";
+import StudentInicio from "../components/StudentInicio";
 
-export default function SideMenu() {
-  const [activeItem, setActiveItem] = useState("Dashboard");
-  const [userData, setUserData] = useState(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-
-    axios
-      .get("http://localhost:8000/api/getuser/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setUserData(response.data);
-      })
-      .catch((error) => {
-        console.error("error user data", error);
-      });
-  }, []);
-
-  if (!userData) return <p>Loadings</p>;
+export default function SideMenu({ fullname }) {
+  const [activeItem, setActiveItem] = useState("Inicio");
 
   const menuItems = [
     {
@@ -48,18 +28,24 @@ export default function SideMenu() {
   return (
     <aside className="w-64 h-screen bg-blue-100 p-6 shadow-md overflow-y-auto">
       <div className="flex items-center mb-8">
-        <div className="w-8 h-8 rounded-full mr-2">
+        <div className="w-10 h-10 rounded-full mr-2">
           <img src={libro} alt="" />
         </div>
         <span className="font-semibold text-lg">TutoEduca</span>
       </div>
 
-      <div className="mb-8 p-4 bg-blue-200 rounded-lg">
-        <h3 className="text-gray-700 font-semibold">
-          {userData.first_name} {userData.last_name}
-        </h3>
-
-        <p className="text-gray-600">Estudiante</p>
+      <div className="mb-8 p-4 bg-blue-200 rounded-lg flex items-center">
+        <div className="w-14 h-14 rounded-full mr-4 overflow-hidden flex-shrink-0">
+          <img
+            src={perfil}
+            alt="Mascota"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div>
+          <h3 className="text-gray-700 font-semibold">{fullname}</h3>
+          <p className="text-gray-600">Estudiante</p>
+        </div>
       </div>
 
       <nav>
@@ -69,8 +55,8 @@ export default function SideMenu() {
             href="#"
             className={`flex items-center mb-4 w-full p-2 rounded-lg transition-colors duration-200 ${
               activeItem === item.name
-                ? "bg-blue-600 text-white"
-                : "text-gray-600 hover:bg-blue-500 hover:text-white"
+                ? "bg-blue-400 text-white"
+                : "text-gray-800 hover:bg-blue-400 hover:text-white"
             }`}
             onClick={() => setActiveItem(item.name)}
           >
